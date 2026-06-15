@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hjemmebryggeriet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,400&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #F7F3EE;
+    --bg2: #EDE8E1;
+    --bg3: #E3DDD5;
+    --ink: #2A2825;
+    --ink2: #6B6560;
+    --ink3: #9C978F;
+    --amber: #C8862A;
+    --amber-light: #F5E8D0;
+    --green: #5A7A4E;
+    --green-light: #DDE8D8;
+    --red: #B04040;
+    --red-light: #F0DDDD;
+    --blue: #3A6080;
+    --blue-light: #D8E5EF;
+    --border: rgba(42,40,37,0.12);
+    --border2: rgba(42,40,37,0.22);
+    --radius: 10px;
+    --radius-lg: 16px;
+  }
+
+  html { font-size: 16px; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--ink);
+    color: var(--bg);
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  header h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--bg);
+  }
+  header span {
+    font-size: 0.8rem;
+    color: var(--ink3);
+    font-style: italic;
+  }
+
+  /* LAYOUT */
+  .layout {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 240px;
+    flex-shrink: 0;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 1rem 0;
+  }
+  .sidebar-label {
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink3);
+    padding: 0 1rem 0.5rem;
+  }
+  .sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0.6rem 1rem;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    transition: background 0.12s, border-color 0.12s;
+    text-decoration: none;
+    color: var(--ink);
+  }
+  .sidebar-item:hover { background: var(--bg3); }
+  .sidebar-item.active {
+    background: var(--bg);
+    border-left-color: var(--amber);
+  }
+  .sidebar-item .si-emoji { font-size: 1.2rem; line-height: 1; }
+  .sidebar-item .si-text { flex: 1; }
+  .sidebar-item .si-name { font-size: 0.88rem; font-weight: 500; line-height: 1.2; }
+  .sidebar-item .si-time { font-size: 0.75rem; color: var(--ink3); }
+  .diff-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .diff-easy { background: var(--green); }
+  .diff-medium { background: var(--amber); }
+
+  /* CONTENT */
+  .content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 2rem;
+    max-width: 720px;
+  }
+
+  /* WELCOME */
+  .welcome {
+    padding: 3rem 2rem;
+    text-align: center;
+  }
+  .welcome .big { font-size: 4rem; margin-bottom: 1rem; }
+  .welcome h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.6rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+  .welcome p { color: var(--ink2); font-size: 0.95rem; line-height: 1.7; max-width: 380px; margin: 0 auto; }
+
+  /* RECIPE */
+  .recipe-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  .recipe-emoji {
+    font-size: 3rem;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .recipe-title h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 0.4rem;
+  }
+  .recipe-title p {
+    color: var(--ink2);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    font-style: italic;
+  }
+
+  /* BADGES */
+  .badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 1.5rem;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+  .badge-green { background: var(--green-light); color: var(--green); }
+  .badge-amber { background: var(--amber-light); color: var(--amber); }
+  .badge-blue { background: var(--blue-light); color: var(--blue); }
+  .badge-red { background: var(--red-light); color: var(--red); }
+
+  /* INFO GRID */
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+    margin-bottom: 1.5rem;
+  }
+  .info-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.75rem 1rem;
+  }
+  .info-card .ic-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink3);
+    margin-bottom: 4px;
+  }
+  .info-card .ic-val {
+    font-size: 0.92rem;
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  /* DIVIDER */
+  .section-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 1.5rem 0;
+  }
+
+  /* SECTIONS */
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+    color: var(--ink);
+  }
+
+  /* INGREDIENTS */
+  .ingredients {
+    background: var(--amber-light);
+    border: 1px solid rgba(200,134,42,0.25);
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  .ingredients ul { list-style: none; }
+  .ingredients li {
+    padding: 5px 0;
+    font-size: 0.9rem;
+    color: var(--ink);
+    border-bottom: 1px solid rgba(200,134,42,0.15);
+    display: flex;
+    gap: 8px;
+  }
+  .ingredients li:last-child { border-bottom: none; }
+  .ingredients li::before { content: '—'; color: var(--amber); flex-shrink: 0; }
+
+  /* STEPS */
+  .steps { margin-bottom: 1.5rem; }
+  .step {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .step-num {
+    font-family: 'Fraunces', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--amber);
+    min-width: 28px;
+    line-height: 1.4;
+    flex-shrink: 0;
+  }
+  .step-text {
+    font-size: 0.92rem;
+    line-height: 1.7;
+    color: var(--ink);
+    padding-top: 3px;
+  }
+  .step-text strong { font-weight: 500; }
+
+  /* TIPS BOX */
+  .tips-box {
+    background: var(--green-light);
+    border: 1px solid rgba(90,122,78,0.25);
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  .tips-box .tip-title {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--green);
+    margin-bottom: 8px;
+  }
+  .tips-box ul { list-style: none; }
+  .tips-box li {
+    font-size: 0.88rem;
+    color: var(--ink);
+    padding: 4px 0;
+    padding-left: 14px;
+    position: relative;
+    line-height: 1.6;
+  }
+  .tips-box li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--green);
+    font-size: 0.8rem;
+  }
+
+  /* CARBONATION BOX */
+  .carb-box {
+    background: var(--blue-light);
+    border: 1px solid rgba(58,96,128,0.25);
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  .carb-box .carb-title {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--blue);
+    margin-bottom: 8px;
+  }
+  .carb-box p {
+    font-size: 0.88rem;
+    color: var(--ink);
+    line-height: 1.7;
+  }
+
+  /* MOBILE */
+  .mobile-nav {
+    display: none;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    padding: 0.5rem;
+    gap: 6px;
+    white-space: nowrap;
+  }
+  .mobile-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px;
+    background: transparent;
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    transition: background 0.1s;
+    white-space: nowrap;
+  }
+  .mobile-btn.active { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .mobile-btn:hover:not(.active) { background: var(--bg3); }
+
+  @media (max-width: 680px) {
+    .sidebar { display: none; }
+    .mobile-nav { display: flex; }
+    .content { padding: 1.25rem; }
+    .recipe-header { flex-direction: column; gap: 0.5rem; }
+    .recipe-emoji { font-size: 2.5rem; }
+    .recipe-title h2 { font-size: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🫧 Hjemmebryggeriet</h1>
+  <span>8 oppskrifter på fermenterte drikker</span>
+</header>
+
+<div class="mobile-nav" id="mobileNav"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="content" id="content">
+    <div class="welcome">
+      <div class="big">🍵</div>
+      <h2>Velg en drikk</h2>
+      <p>Her finner du oppskrifter på 8 hjemmelagede fermenterte drikker — fra superenkel tepache til klassisk kombucha med kullsyre.</p>
+    </div>
+  </main>
+</div>
+
+<script>
+const drinks = [
+  {
+    id: "vannkefir",
+    emoji: "💧",
+    name: "Vannkefir",
+    tagline: "Rask, lett og full av probiotika – perfekt for nybegynnere",
+    difficulty: "Lett",
+    time: "24–48 timer",
+    utstyr: "1–2L glasskrukke, finmasket sil",
+    kullsyre: "Ja (2. fermentering)",
+    alcPct: "< 0,5%",
+    ingredienser: [
+      "1 liter filtrert vann (eller vann som har stått åpent natten over)",
+      "60 g sukker (hvitt fungerer best – ikke honning i 1. ferm.)",
+      "2–3 ss vannkefirkorn",
+      "½ sitron, skåret i skiver",
+      "1–2 tørkede dadler eller fikener (valgfritt – gir næring til kornene)",
+    ],
+    steps: [
+      { t: "Forbered sukkervann", txt: "Løs opp sukkeret i litt varmt vann, hell deretter i resten av det kalde vannet. Vannet skal være romtemperert – aldri varmt." },
+      { t: "Tilsett ingredienser", txt: "Ha kefirkornene i en ren glasskrukke. Tilsett sitronskivene og dadlene. Hell over sukkervannet." },
+      { t: "Dekk til", txt: "Dekk krukken med et kaffefilter, osteklede eller tøystykke festet med strikk. Ikke lufttett lokk – kefiren trenger luft i 1. fermentering." },
+      { t: "Fermenter 24–48 timer", txt: "La stå ved romtemperatur (20–24°C). Smak etter 24 timer. Søtere = kortere tid, surere = lenger. Kefiren er klar når den lukter svakt syrlig og gjærholdig." },
+      { t: "Sil og tappes", txt: "Sil ut kefirkornene med en plastikkil (ikke metall – det skader kornene). Hell ferdig kefir på tett flaske. Kornene er klare for ny batch!" },
+    ],
+    tips: [
+      "Bruk aldri metallsil eller -skje – det kan skade kefirkornene over tid",
+      "Kefirkornene vokser! Del dem når du har for mange, eller gi til venner",
+      "Vil du ta pause? Oppbevar korn i sukkervann i kjøleskap – kan stå noen uker",
+      "Kornene kan bli gule av sitron – det er helt normalt",
+    ],
+    kullsyreTips: "Hell ferdig silt kefir på tett flaske (glass med kapsel eller plastflaske). Tilsett 2–3 ss fruktsaft eller en ts sukker. La stå 12–24 timer i romtemp. Bruk plastflaske som «trykkmåler»: når den er fast, er kullsyren klar. Åpne forsiktig! Sett i kjøleskap for å stoppe fermenteringen."
+  },
+  {
+    id: "melkekefir",
+    emoji: "🥛",
+    name: "Melkekefir",
+    tagline: "Drikkeyoghurt du lager på 24 timer – enklest av alt",
+    difficulty: "Lett",
+    time: "24 timer",
+    utstyr: "Glasskrukke, sil",
+    kullsyre: "Nei",
+    alcPct: "0,5–1%",
+    ingredienser: [
+      "500 ml helmelk (fetere = kremere resultat)",
+      "1 ss melkekefirkorn (ca. 10–15 g)",
+    ],
+    steps: [
+      { t: "Bland korn og melk", txt: "Ha melkekefirkornene i en ren glasskrukke. Hell over romtemperert melk. Du trenger ikke røre." },
+      { t: "Dekk løst", txt: "Dekk med et klede eller kaffefilter. Ikke lufttett – kefiren trenger å puste. La stå på benken ved romtemperatur." },
+      { t: "Vent 18–24 timer", txt: "Smak underveis. Etter 12–18t er den mild, etter 24–36t er den tykkere og surere. Temperatur påvirker mye – varmt kjøkken = raskere." },
+      { t: "Sil og drikk", txt: "Sil ut kornene med plastikkil. Kefiren er klar til å drikkes. Kornene går rett i ny melk for neste batch." },
+    ],
+    tips: [
+      "Kornene skal se ut som blomkålbuketter – hvite/kremfargede og litt glitrende",
+      "Kald melk gir tregere fermentering, varm melk raskere – romtemp er ideelt",
+      "Kornene formerer seg: del dem med venner eller bruk overskudd i smoothie",
+      "Kefir kan brukes i matlaging som crème fraîche eller kjernemelk",
+      "Pause: oppbevar korn i melk i kjøleskap, skift melk 1x i uken",
+    ],
+    kullsyreTips: null
+  },
+  {
+    id: "tepache",
+    emoji: "🍍",
+    name: "Tepache",
+    tagline: "Mexikansk tradisjonsdrikk – trenger null spesialingredienser",
+    difficulty: "Lett",
+    time: "2–3 dager",
+    utstyr: "Stor glasskrukke eller bolle (2+ liter), sil",
+    kullsyre: "Litt naturlig",
+    alcPct: "0,5–2%",
+    ingredienser: [
+      "Skall og kjerne fra 1 moden ananas (ikke fruktmassen, bare skall + kjerne)",
+      "150–200 g mørkt sukker, råsukker eller piloncillo",
+      "2 kanelstenger",
+      "4–5 hele nelliker",
+      "1,5–2 liter vann",
+      "Valgfritt: ½ chili, litt ingefær, appelsinskall",
+    ],
+    steps: [
+      { t: "Vask ananasen", txt: "Skrubb skallet godt under kaldt vann. Skrell ananasen og spar skall + midtstykke. Du kan spise fruktmassen mens fermenteringen skjer." },
+      { t: "Kok sukkerlagen", txt: "Varm opp vannet med sukkeret til det løser seg opp. Avkjøl til romtemperatur – ikke bruk varmt vann på skallet." },
+      { t: "Samle alt i krukken", txt: "Ha ananasrester, kanel og nellik i krukken. Hell avkjølt sukkerlag over. Dekk løst med klede – ikke lufttett lokk." },
+      { t: "Fermenter 2–3 dager", txt: "La stå i romtemperatur. Rør gjerne en gang daglig. Etter 1 dag ser du gjerne litt bobler. Etter 2–3 dager er den syrlig og god. Smak deg frem!" },
+      { t: "Sil og server", txt: "Sil ut alt fast. Server kjølt over is, evt. med litt mineralvann for mer bobler. Holdbarheten er ca. 5 dager i kjøleskap." },
+    ],
+    tips: [
+      "Jo modnere ananas, jo bedre resultat – naturlig gjær sitter på skallet",
+      "La den ikke stå for lenge – etter 4+ dager kan den bli for alkoholholdig og eddikaktig",
+      "Vil du ha mer kullsyre? Tapp på tett flaske og la stå 12–24 timer i romtemp",
+      "Prøv å tilsette tamarind, hibiskus eller jalapeño for spennende varianter",
+    ],
+    kullsyreTips: "Tapp silt tepache på tette flasker og la stå 12–24 timer i romtemperatur. Bruker du plastflaske kan du kjenne når den er hard – da er kullsyren klar. Sett i kjøleskap."
+  },
+  {
+    id: "kvass",
+    emoji: "🍞",
+    name: "Brødkvass",
+    tagline: "Slavisk tradisjon – fermentert av rugbrød fra kjøkkenet",
+    difficulty: "Lett",
+    time: "24–48 timer",
+    utstyr: "Stor gryte, sil, flaske",
+    kullsyre: "Litt naturlig",
+    alcPct: "0,5–1,5%",
+    ingredienser: [
+      "300–400 g mørkt rugbrød (gjerne litt gammelt)",
+      "1,5–2 liter vann",
+      "2–3 ss sukker",
+      "En håndfull rosiner (starter gjæringen naturlig)",
+      "Valgfritt: ¼ ts tørrgjær for raskere start",
+      "Valgfritt: frisk mynte, sitronmelisse",
+    ],
+    steps: [
+      { t: "Rist brødet", txt: "Skjær rugbrødet i skiver og rist i ovnen på 180°C til mørkebrun og tørr – ca. 15–20 min. Ikke brent, men mørk. Dette gir den karakteristiske kvass-smaken." },
+      { t: "Lag infusjon", txt: "Kok opp vannet og hell over brødskivene i en stor bolle eller gryte. La trekke i 3–4 timer til romtemperatur." },
+      { t: "Sil og tilsett sukker", txt: "Sil av all brødmasse. Press godt på brødet for å få ut all væske. Tilsett sukker og rør til det løser seg. Tilsett rosiner." },
+      { t: "Fermenter 24–48 timer", txt: "Dekk løst og la stå i romtemperatur. Etter 12–24 timer ser du bobler og rosinene flyter til toppen – det er et godt tegn! Smak underveis." },
+      { t: "Sil igjen og flaske", txt: "Sil av rosiner. Tapp på flasker og avkjøl. Best å drikke innen 3–5 dager." },
+    ],
+    tips: [
+      "Jo mørkere rugbrød, jo rikere og dypere smak",
+      "Borodino-brød eller annet krydret rugbrød gir fantastisk resultat",
+      "Rosinene er naturlig gjær – de starter fermenteringen uten tilsatt gjær",
+      "Kvass kan brukes i matlaging: okrosjka (kald kvasssuppe) er en klassiker",
+    ],
+    kullsyreTips: "Tapp på tette flasker når du ser aktiv gjæring (dag 1–2). La stå 12–24 timer i romtemp med lokket på – kullsyren bygger seg opp. Avkjøl deretter. Pass på trykket!"
+  },
+  {
+    id: "gingerbeer",
+    emoji: "🫚",
+    name: "Ginger beer",
+    tagline: "Sterk og frisk med naturlig kullsyre – ingen gjær nødvendig",
+    difficulty: "Lett",
+    time: "3–5 dager",
+    utstyr: "Glasskrukke til ginger bug, plastflaske for kullsyre",
+    kullsyre: "Ja – naturlig",
+    alcPct: "0,5–1%",
+    ingredienser: [
+      "– Ginger bug (starter):",
+      "50 g fersk ingefær med skall, finhakket",
+      "2 ss sukker",
+      "250 ml vann",
+      "– Selve drikken:",
+      "1 liter vann",
+      "80 g sukker",
+      "Juice av 2 sitroner",
+      "30–50 g fersk ingefær, revet",
+      "3–4 ss ferdig ginger bug (væsken)",
+    ],
+    steps: [
+      { t: "Lag ginger bug (dag 1–3)", txt: "Bland finhakket ingefær, sukker og vann i en glasskrukke. Rør godt. Dekk med klede. La stå i romtemp og tilsett 1 ts ingefær + 1 ts sukker daglig. Etter 2–3 dager bobler den – da er den klar." },
+      { t: "Lag ingefærvann", txt: "Kok opp 1 liter vann med revet ingefær og sukker. Rør til sukker løser seg. La avkjøle til romtemperatur." },
+      { t: "Sil og tilsett", txt: "Sil bort ingefærrester. Tilsett sitronsaft og 3–4 ss ginger bug-væske. Rør godt." },
+      { t: "Tapp og fermenter", txt: "Hell i plastflasker (ikke helt fulle – legg igjen 3–4 cm til toppen). Lukk tett. La stå i romtemp 24–48 timer til flasken er fast og hard." },
+      { t: "Avkjøl forsiktig", txt: "Sett i kjøleskap natten over FØR du åpner. Åpne sakte over vasken – det kan bruse mye! Best innen 1 uke." },
+    ],
+    tips: [
+      "Plastic flasker er tryggere enn glass for kullsyre – du kan kjenne trykket",
+      "Jo eldre og mer aktiv ginger bug, jo mer kullsyre og heftigere smak",
+      "Tilsett chili, lime eller et stykke sitrongress for varianter",
+      "Ha alltid igjen litt ginger bug og mate den daglig – da er neste batch raskere",
+    ],
+    kullsyreTips: "Kullsyren oppstår naturlig i flasken under 2. fermentering. Bruk plastflasker og klem på dem – de skal kjennes harde før du setter dem i kjøleskap. Viktig: avkjøl alltid FØR du åpner. Åpne sakte og forsiktig!"
+  },
+  {
+    id: "eplesider",
+    emoji: "🍎",
+    name: "Eplesider",
+    tagline: "Naturlig gjæring fra epleskallet – enkelt og smakfullt",
+    difficulty: "Lett",
+    time: "1–2 uker",
+    utstyr: "1–2L glassflaske, ballong eller vannlås",
+    kullsyre: "Ja – naturlig",
+    alcPct: "3–6% (avhengig av tid og sukker)",
+    ingredienser: [
+      "1 liter fersk upasteurisert eplemost (f.eks. Gilde Saft – sjekk at det er upasteurisert)",
+      "Valgfritt: 1–2 ss sukker for sterkere gjæring",
+      "Valgfritt: knipe kanel, et par nellik",
+    ],
+    steps: [
+      { t: "Finn riktig eplemost", txt: "Det viktigste: mosen MÅ være upasteurisert – da har den naturlig gjær. Se etter «upasteurisert» på etiketten, eller bruk fersk most fra lokalt prøss." },
+      { t: "Hell i flaske", txt: "Hell mosen i en glassflaske (fyll ca. 80% – legg igjen plass til gass). Tilsett evt. sukker og krydder." },
+      { t: "Lag luftventil", txt: "Alternativ A: Strekk en ballong over flaskeåpningen og stikk et lite hull i den med nål – den blåser seg opp uten å sprekke. Alternativ B: Kjøp en enkel vannlås (ca. 30 kr online)." },
+      { t: "Gjær 1–2 uker", txt: "La stå ved romtemperatur. Du ser gjæringen i gang etter 1–3 dager (bobler, ballongen blåser seg opp). Smak underveis – den blir drier og mer alkoholholdig over tid." },
+      { t: "Tapp og avslutt", txt: "Når gjæringen roer seg og smaken er slik du vil ha den, sett flasken i kjøleskap. For naturlig kullsyre: skru lokket tett og la stå 2–3 dager kaldt." },
+    ],
+    tips: [
+      "Pasteurisert most gjærer ikke – sjekk alltid etiketten",
+      "Varm temperatur = raskere gjæring og mer alkohol",
+      "Etter 1 uke er den halvtørr og lett, etter 2 uker er den tørrere og sterkere",
+      "Vil du ha søtere? Stopp gjæringen tidlig ved å avkjøle og drikke raskt",
+    ],
+    kullsyreTips: "Når gjæringen nesten har stoppet (ballongen er nesten flat), skru lokket tett og la stå 2–3 dager ved romtemp for naturlig kullsyre. Alternativt: sett i kjøleskap for flat sider. Bruk glassflaske med kapsel – sjekk trykket forsiktig!"
+  },
+  {
+    id: "kombucha",
+    emoji: "🍵",
+    name: "Kombucha",
+    tagline: "Den klassiske fermenterte teen – med eller uten kullsyre",
+    difficulty: "Middels",
+    time: "7–14 dager (1. ferm.) + 2–3 dager (2. ferm.)",
+    utstyr: "2–3L glasskrukke, tøy til å dekke, tette flasker til 2. ferm.",
+    kullsyre: "Ja – i 2. fermentering",
+    alcPct: "0,5–3%",
+    ingredienser: [
+      "1 liter svart eller grønn te (sterk – 2–3 ts / 2–3 teposer)",
+      "70–80 g hvitt sukker",
+      "1 SCOBY (Symbiotic Culture of Bacteria and Yeast)",
+      "100–150 ml startvæske (ferdig kombucha fra forrige batch eller kjøpt raw kombucha)",
+      "– 2. fermentering (kullsyre):",
+      "2–3 ss fruktsaft, purert frukt eller ½ ts sukker per flaske",
+    ],
+    steps: [
+      { t: "Brygg sterk te", txt: "Kok opp 1 liter vann. Tilsett te og la trekke 10–15 minutter. Ta ut teen og løs opp sukkeret mens teen er varm. Avkjøl til romtemperatur – aldri tilsett SCOBY i varm te." },
+      { t: "Tilsett startvæske", txt: "Hell startvæsken (kombucha fra forrige batch) i glasskrukken. Dette senker pH og beskytter SCOBYen mot skadelige bakterier." },
+      { t: "Tilsett avkjølt te og SCOBY", txt: "Hell avkjølt te i krukken. Legg SCOBY-en forsiktig oppi – den vil flyte eller synke, begge deler er helt OK." },
+      { t: "Dekk til og fermenter", txt: "Dekk med et tett vevd tøy (ikke osteklede – fluene elsker kombucha). Fest med strikk. La stå på et mørkt, romtemperert sted (18–24°C) i 7–14 dager." },
+      { t: "Smak og tapp", txt: "Smak etter 7 dager med en ren skje. Søt og mild? La stå lenger. Syrlig og frisk? Klar! Ta ut SCOBYen og 100–150 ml starter til neste batch." },
+      { t: "2. fermentering (kullsyre)", txt: "Hell kombucha på tette flasker (uten SCOBY). Tilsett 2–3 ss fruktsaft eller ½ ts sukker per 500 ml. Lukk tett og la stå i romtemp 2–3 dager. Avkjøl deretter." },
+    ],
+    tips: [
+      "SCOBY kan kjøpes online (Coolstuff, diverse bryggebutikker) eller fås fra noen som brygger",
+      "En ny SCOBY vokser på toppen av væsken for hver batch – gi den til noen!",
+      "Aldri bruk antibakteriell såpe til å vaske bryggeutstyr – skyll godt med eddik istedet",
+      "Hvit te gir mild smak, svart te gir rikere og dypere smak",
+      "Smakstilsetning i 2. ferm.: ingefær+sitron, bringebær, mango, hibiskus – fantasien er grensen",
+    ],
+    kullsyreTips: "Tilsett søtt i tette flasker og la stå 2–3 dager ved romtemp. Sjekk trykket daglig – åpne lokket forsiktig (over vasken!). Flasker med kapsel er best. Avkjøl alltid før servering. For MYE kullsyre kan gi fontene-effekt – vær forsiktig!"
+  },
+  {
+    id: "junte",
+    emoji: "🍃",
+    name: "Jun te",
+    tagline: "Kombuchaens milde søster – brygges med honning og grønn te",
+    difficulty: "Middels",
+    time: "5–10 dager",
+    utstyr: "2L glasskrukke, tøy til å dekke, tette flasker",
+    kullsyre: "Ja – i 2. fermentering",
+    alcPct: "0,5–2%",
+    ingredienser: [
+      "1 liter lett grønn te (ikke for sterk – 1–1,5 ts per kopp)",
+      "80–100 g råhonning (ikke pasteurisert – enzymer er viktige!)",
+      "1 Jun SCOBY + 100 ml Jun-starter",
+      "– 2. fermentering:",
+      "1–2 ss honning eller fruktsaft per flaske",
+    ],
+    steps: [
+      { t: "Brygg mild grønn te", txt: "Kok opp vann og la avkjøle til ca. 70–80°C (ikke kokende – grønn te blir bitter). La teen trekke 3–5 minutter. Sil og avkjøl videre til romtemperatur." },
+      { t: "Tilsett honning", txt: "Viktig: honningen skal ikke varmes over 40°C – da mister den de levende enzymene som er essensielle for Jun. Tilsett honningen når teen er romtemperert og rør til den løser seg." },
+      { t: "Tilsett starter og SCOBY", txt: "Hell Jun-starter (tidligere batch) i krukken, deretter te-honningblandingen. Legg Jun SCOBYen forsiktig oppi." },
+      { t: "Fermenter 5–10 dager", txt: "Dekk med tett tøy og la stå ved 20–24°C. Jun fermenterer litt raskere enn kombucha. Smak etter 5 dager – den skal smake mildt syrlig med honning-undertoner." },
+      { t: "Tapp til 2. fermentering", txt: "Ta ut SCOBY og 100 ml starter til neste batch. Tapp på tette flasker med 1–2 ss honning eller saft per flaske. La stå 1–3 dager romtemperert for kullsyre." },
+    ],
+    tips: [
+      "Jun SCOBY er ikke det samme som kombucha-SCOBY – de er tilpasset ulike miljøer",
+      "Råhonning fra lokale bier er ideelt – unngå oppvarmet eller filtrert honning",
+      "Jun tåler dårlig temperatursvingninger – hold temperaturen stabil under fermentering",
+      "Mildere og mer floral smak enn kombucha – fantastisk med rosenblader eller lavendel i 2. ferm.",
+      "Lys og varme bryter ned teen – bruk en mørk eller skjermet plass",
+    ],
+    kullsyreTips: "Tilsett 1–2 ss honning per 500 ml i tette flasker og la stå 1–3 dager ved romtemp. Jun produserer kullsyre raskere enn kombucha – sjekk flaskene etter 24 timer. Avkjøl alltid FØR åpning."
+  }
+];
+
+function diffClass(d) { return d === 'Lett' ? 'diff-easy' : 'diff-medium'; }
+
+function buildSidebar() {
+  const sb = document.getElementById('sidebar');
+  let html = '<div class="sidebar-label">Velg drikk</div>';
+  drinks.forEach(d => {
+    html += `<div class="sidebar-item" id="si-${d.id}" onclick="show('${d.id}')">
+      <span class="si-emoji">${d.emoji}</span>
+      <span class="si-text">
+        <span class="si-name">${d.name}</span>
+        <span class="si-time">${d.time}</span>
+      </span>
+      <span class="diff-dot ${diffClass(d.difficulty)}"></span>
+    </div>`;
+  });
+  sb.innerHTML = html;
+}
+
+function buildMobileNav() {
+  const mn = document.getElementById('mobileNav');
+  drinks.forEach(d => {
+    const btn = document.createElement('button');
+    btn.className = 'mobile-btn';
+    btn.id = `mb-${d.id}`;
+    btn.innerHTML = `${d.emoji} ${d.name}`;
+    btn.onclick = () => show(d.id);
+    mn.appendChild(btn);
+  });
+}
+
+function show(id) {
+  const d = drinks.find(x => x.id === id);
+  if (!d) return;
+
+  document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.mobile-btn').forEach(el => el.classList.remove('active'));
+  const si = document.getElementById(`si-${id}`);
+  if (si) si.classList.add('active');
+  const mb = document.getElementById(`mb-${id}`);
+  if (mb) mb.classList.add('active');
+
+  const diffBadge = d.difficulty === 'Lett'
+    ? '<span class="badge badge-green">✓ Lett</span>'
+    : '<span class="badge badge-amber">⚡ Middels</span>';
+
+  const carbBadge = d.kullsyre.startsWith('Ja')
+    ? '<span class="badge badge-blue">🫧 Kullsyre mulig</span>'
+    : d.kullsyre === 'Litt naturlig'
+    ? '<span class="badge badge-blue">🫧 Litt kullsyre</span>'
+    : '<span class="badge badge-red">— Ingen kullsyre</span>';
+
+  const stepsHtml = d.steps.map((s, i) => `
+    <div class="step">
+      <div class="step-num">${i + 1}</div>
+      <div class="step-text"><strong>${s.t}:</strong> ${s.txt}</div>
+    </div>
+  `).join('');
+
+  const tipsHtml = d.tips.map(t => `<li>${t}</li>`).join('');
+
+  const carbHtml = d.kullsyreTips ? `
+    <div class="carb-box">
+      <div class="carb-title">🫧 Slik lager du kullsyre</div>
+      <p>${d.kullsyreTips}</p>
+    </div>` : '';
+
+  const ingHtml = d.ingredienser.map(i =>
+    i.startsWith('–') ? `<li style="font-weight:500; color:var(--amber); border-bottom:none; padding-top:10px">${i}</li>` : `<li>${i}</li>`
+  ).join('');
+
+  document.getElementById('content').innerHTML = `
+    <div class="recipe-header">
+      <div class="recipe-emoji">${d.emoji}</div>
+      <div class="recipe-title">
+        <h2>${d.name}</h2>
+        <p>${d.tagline}</p>
+      </div>
+    </div>
+
+    <div class="badges">
+      ${diffBadge}
+      ${carbBadge}
+      <span class="badge badge-green">⏱ ${d.time}</span>
+      <span class="badge badge-amber">🍶 ${d.alcPct} alkohol</span>
+    </div>
+
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="ic-label">Utstyr</div>
+        <div class="ic-val">${d.utstyr}</div>
+      </div>
+      <div class="info-card">
+        <div class="ic-label">Tid totalt</div>
+        <div class="ic-val">${d.time}</div>
+      </div>
+      <div class="info-card">
+        <div class="ic-label">Kullsyre</div>
+        <div class="ic-val">${d.kullsyre}</div>
+      </div>
+    </div>
+
+    <hr class="section-divider">
+    <div class="section-title">Ingredienser</div>
+    <div class="ingredients">
+      <ul>${ingHtml}</ul>
+    </div>
+
+    <div class="section-title">Fremgangsmåte</div>
+    <div class="steps">${stepsHtml}</div>
+
+    ${carbHtml}
+
+    <hr class="section-divider">
+    <div class="tips-box">
+      <div class="tip-title">Tips og triks</div>
+      <ul>${tipsHtml}</ul>
+    </div>
+  `;
+
+  window.scrollTo({ top: 0 });
+}
+
+buildSidebar();
+buildMobileNav();
+</script>
+</body>
+</html>
